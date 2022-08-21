@@ -2,15 +2,31 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
+app.set("view engine", "ejs");
 
 app.get("/", function(req,res) {
 
   var today = new Date();
-  if(today.getDay() === 6 || today.getDay() === 0) {
-    res.send("Hey its a weekend ! Enjoy !");
+  var day = "";
+  if(today.getDay() === 0 ) {
+    day = "Sunday";
+  } else if(today.getDay() === 1) {
+    day = "Monday";
+  } else if(today.getDay() === 2) {
+    day = "Tuesday";
+  } else if(today.getDay() === 3 ) {
+    day = "Wednesday";
+  } else if(today.getDay() === 4 ) {
+    day = "Thrusday";
+  } else if(today.getDay() === 5 ) {
+    day = "Friday";
+  } else if(today.getDay() === 6 ) {
+    day = "Saturday";
   } else {
-    res.send("you have to work");
+    day = "SorryDay"
   }
+
+  res.render("list", {kindOfDay: day});
 
 
   // console.log(today.getDay());
