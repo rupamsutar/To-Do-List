@@ -6,23 +6,28 @@
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-    <h1><%= kindOfDay %></h1>
 
-    <ul>
-      <li>Buy Food</li>
-      <li>Cook Food</li>
-      <li>Eat Food</li>
+    <div class="box" id="heading">
+      <h1><%= kindOfDay %></h1>
+    </div>
 
-      <% for (var i = 0; i < itemsx.length ; i++) { %>
-        <li><%= itemsx[i] %> </li>
-      <% } %>
+    <div class="box">
+        <% for (var i = 0; i < itemsx.length ; i++) { %>
+          <div class="item">
+            <input type="checkbox">
+            <p><%= itemsx[i] %> </p>
+          </div>
+        <% } %>
 
-    </ul>
+        <form class="item" action="/" method="post">
+          <input type="text" name="newItem" Placeholder="New Item" autocomplete = "off">
+          <button type="submit" name="button">+</button>
+        </form>
+    </div>
 
-    <form action="/" method="post">
-      <input type="text" name="newItem">
-      <button type="submit" name="button">ADD</button>
-    </form>
+
+
+
 
 
   </body>
