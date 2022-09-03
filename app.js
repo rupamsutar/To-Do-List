@@ -13,6 +13,10 @@ app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost:27017/todolistDB");
 
+const itemsSchema = {
+  name:String
+};
+
 
 
 app.get("/", function(req,res) {
