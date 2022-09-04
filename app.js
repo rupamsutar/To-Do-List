@@ -38,10 +38,8 @@ const listSchema = {
 };
 
 const List = mongoose.model("list", listSchema)
-const newList = [];
 
 //8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
-
 app.get("/", function(req,res) {
 
   Item.find({}, function(err, items) {
@@ -59,10 +57,14 @@ app.get("/", function(req,res) {
       res.render("list", {listItems: "Today", itemsx: items})
     };
   });
+});
+//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
-  app.post("/delete", function(req,res) {
-    const checkedItemId = req.body.checkbox;
+app.post("/delete", function(req,res) {
+  const checkedItemId = req.body.checkbox;
+  const listName = req.body.listName;
 
+  if (listName === "Today") {
     Item.findByIdAndRemove(checkedItemId, function(err) {
       if (err) {
         console.log(err);
@@ -71,11 +73,17 @@ app.get("/", function(req,res) {
         res.redirect("/");
       };
     });
-  });
+  } else {
+    List.findOneAndUpdate({name: listName},{$pull: {items: {_id: checkedItemId}}}, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect("/" + listName);
+      };
+    });
+  };
 });
 
-
-//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
 app.get("/:customListName", function(req,res) {
   const customListName = req.params.customListName;
@@ -89,7 +97,7 @@ app.get("/:customListName", function(req,res) {
       } else {
         const list = new List ({
           name: customListName,
-          items: newList
+          items: []
         });
         list.save();
         res.redirect("/" + customListName)
