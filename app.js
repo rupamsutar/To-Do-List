@@ -30,10 +30,6 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-
-
-
-
 app.get("/", function(req,res) {
 
   Item.find({}, function(err, items) {
@@ -51,8 +47,6 @@ app.get("/", function(req,res) {
       res.render("list", {listItems: "Today", itemsx: items})
     };
   });
-
-
 
   app.post("/", function(req,res) {
 
@@ -79,18 +73,45 @@ app.get("/", function(req,res) {
       };
     });
   });
+});
+
+//the code for any todo list page to appear on the screen ************
+
+const listSchema = {
+  name:String,
+  items: [itemsSchema]
+};
+
+const List = mongoose.model("list", listSchema)
+const newList = [];
+
+
+app.get("/:customListName", function(req,res) {
+  const customListName = req.params.customListName;
+
+  List.findOne({name: customListName}, function(err,foundList) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundList) {
+        res.render("list", {listItems: customListName, itemsx: foundList.items})
+      } else {
+        const list = new List ({
+          name: customListName,
+          items: newList
+        });
+        list.save();
+        res.redirect("/" + customListName)
+      }
+    }
+  })
+
 
 });
 
-app.get("/work", function(req,res) {
-  res.render("list", {listItems: "Work List", itemsx: workItems});
 
-  app.post("/work", function(req,res) {
-    let item = req.body.newItem;
-    workItems.push(item);
-    res.redirect("/work");
-  });
-});
+
+// ********************************************************
 
 app.listen(process.env.PORT || 3000 , function() {
   console.log("Server is running on port 3000");
