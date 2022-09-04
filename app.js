@@ -1,9 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const date = require( __dirname + "/date.js");
-
-console.log(date);
 
 const app = express();
 app.set("view engine", "ejs");
@@ -17,25 +14,57 @@ const itemsSchema = {
   name:String
 };
 
+const Item = mongoose.model("item", itemsSchema);
+
+const item1 = new Item({
+  name: "Hit the GYM"
+});
+
+const item2 = new Item({
+  name: "Take a Bath"
+});
+
+const item3 = new Item({
+  name: "Intake Protien"
+});
+
+const defaultItems = [item1, item2, item3];
+
+
+
 
 
 app.get("/", function(req,res) {
 
-  const day = date.getDay();
+  Item.find({}, function(err, items) {
 
-  res.render("list", {listItems: day, itemsx: items});
+    if (items.length === 0) {
+      Item.insertMany(defaultItems, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Successfully added items to the DB");
+        };
+      });
+      res.redirect("/");
+    } else {
+      res.render("list", {listItems: "Today", itemsx: items})
+    };
+  });
+
 
 
   app.post("/", function(req,res) {
-    var it = req.body.newItem;
 
-    if(req.body.list === "Work") {
-      workItems.push(it);
-      res.redirect("/work");
-    } else {
-      items.push(it);
-      res.redirect("/");
-    };
+    const  itemName = req.body.newItem;
+
+    const item = new Item ({
+      name: itemName
+    });
+
+    item.save();
+
+    res.redirect("/");
   });
 });
 
