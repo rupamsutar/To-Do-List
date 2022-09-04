@@ -30,6 +30,18 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+//the code for any todo list page to appear on the screen ************
+
+const listSchema = {
+  name:String,
+  items: [itemsSchema]
+};
+
+const List = mongoose.model("list", listSchema)
+const newList = [];
+
+//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+
 app.get("/", function(req,res) {
 
   Item.find({}, function(err, items) {
@@ -48,19 +60,6 @@ app.get("/", function(req,res) {
     };
   });
 
-  app.post("/", function(req,res) {
-
-    const  itemName = req.body.newItem;
-
-    const item = new Item ({
-      name: itemName
-    });
-
-    item.save();
-
-    res.redirect("/");
-  });
-
   app.post("/delete", function(req,res) {
     const checkedItemId = req.body.checkbox;
 
@@ -75,16 +74,8 @@ app.get("/", function(req,res) {
   });
 });
 
-//the code for any todo list page to appear on the screen ************
 
-const listSchema = {
-  name:String,
-  items: [itemsSchema]
-};
-
-const List = mongoose.model("list", listSchema)
-const newList = [];
-
+//8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
 app.get("/:customListName", function(req,res) {
   const customListName = req.params.customListName;
@@ -104,10 +95,32 @@ app.get("/:customListName", function(req,res) {
         res.redirect("/" + customListName)
       }
     }
-  })
+  });
+});
 
+app.post("/", function(req,res) {
+  const itemName = req.body.newItem;
+  const listName = req.body.list;
+
+  const item = new Item ({
+    name: itemName
+  });
+
+  if (listName === "Today") {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({name: listName}, function(err,foundList) {
+      foundList.items.push(item);
+      foundList.save();
+      res.redirect("/" + listName)
+    });
+  }
 
 });
+
+
+
 
 
 
