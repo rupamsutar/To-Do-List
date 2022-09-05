@@ -8,6 +8,8 @@ I tried to develop this To-Do-List App to help manage our day to day tasks and b
 Feel free to use this one! I have already connected the Database to the mongoDB Cluster.
 Even if you want to Create your own To-Do-list, just follow the link given below !
 
-link: https://rupam-todo-list.herokuapp.com/<your Name>
+link: https://rupam-todo-list.herokuapp.com/yourName
 
-where, put your name instead of "<your Name>"
+where, put your name instead of "yourName"
+
+Hope you ll enjoy it !
